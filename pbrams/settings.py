@@ -28,8 +28,8 @@ SECRET_KEY = 'django-insecure-e^r_$f192rgpou=c1*ay#gqoqvr@k_w825y!k_e6wd+718je=t
 
 # ALLOWED_HOSTS = []
 DEBUG = False
-# ALLOWED_HOSTS = ['pbrams.onrender.com']
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'pbrams.onrender.com').split(',')
+ALLOWED_HOSTS = ['pbrams.onrender.com']
+#ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'pbrams.onrender.com').split(',')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
@@ -163,7 +163,7 @@ STATIC_URL = 'static/'
 
 STATIC_ROOT= os.path.join(BASE_DIR, 'static')
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+#STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # MEDIA_URL = '/media/'
 
