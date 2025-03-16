@@ -1,0 +1,142 @@
+{% extends "hostel/index.html" %}
+{% load static %}
+{% block title %}Request Room{% endblock title %}
+
+{% block main-content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3>Request a Room</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="gender" class="form-label">Gender</label>
+                            {{ form.gender }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_hostel" class="form-label">Preferred Hostel</label>
+                            {{ form.hostel }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_block" class="form-label">Preferred Block</label>
+                            {{ form.block }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_room" class="form-label">Preferred Room Number</label>
+                            {{ form.room }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="special_request" class="form-label">Special Requests or Conditions (Optional)</label>
+                            {{ form.special_request }}
+                        </div>
+                        <!-- Priority Field Section -->
+                        <div class="mb-3">
+                            <label for="priority" class="form-label">Priority Level</label>
+                            {{ form.priority }}
+                        </div>
+                        <!-- Room Selection Section -->
+                        <div class="mb-3">
+                            <label for="room" class="form-label">Select Room</label>
+                            <select name="room" id="room" class="form-select">
+                                {% for room in available_rooms %}
+                                    <option value="{{ room.id }}">{{ room.name }} ({{ room.block.hostel.name }} - Block {{ room.block.name }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">Submit Request</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main-content %}
+
+<script>
+    document.getElementById('id_hostel').addEventListener('change', function () {
+        const hostelId = this.value;
+        fetch(`/ajax/load-blocks/?hostel=${hostelId}`)
+            .then(response => response.json())
+            .then(data => {
+                const blockSelect = document.getElementById('id_block');
+                blockSelect.innerHTML = '<option value="">Select Block</option>';
+                data.forEach(block => {
+                    blockSelect.innerHTML += `<option value="${block.id}">${block.name}</option>`;
+                });
+            });
+    });
+    
+    document.getElementById('id_block').addEventListener('change', function () {
+        const blockId = this.value;
+        fetch(`/ajax/load-rooms/?block_id=${blockId}`)
+            .then(response => response.json())
+            .then(data => {
+                const roomSelect = document.getElementById('id_room');
+                roomSelect.innerHTML = '<option value="">Select Room</option>';
+                data.forEach(room => {
+                    roomSelect.innerHTML += `<option value="${room.id}">${room.name}</option>`;
+                });
+            });
+    });
+    
+</script>
+{% comment %} {% extends "hostel/index.html" %}
+{% load static %}
+{% block title %}Request Room{% endblock title %}
+
+{% block main-content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3>Request a Room</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="gender" class="form-label">Gender</label>
+                            {{ form.gender }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="hostel" class="form-label">Preferred Hostel</label>
+                            {{ form.hostel }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="block" class="form-label">Preferred Block</label>
+                            {{ form.block }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="room_number" class="form-label">Preferred Room Number</label>
+                            {{ form.room_number }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="special_request" class="form-label">Special Requests or Conditions (Optional)</label>
+                            {{ form.special_request }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="room" class="form-label">Select Room</label>
+                            <select name="room" id="room" class="form-select">
+                                {% for room in available_rooms %}
+                                    <option value="{{ room.id }}">{{ room.name }} ({{ room.block.hostel.name }} - Block {{ room.block.name }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">Submit Request</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main-content %} {% endcomment %}

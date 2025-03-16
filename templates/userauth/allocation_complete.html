@@ -1,0 +1,27 @@
+{% extends "hostel/index.html" %}
+{% load static %}
+{% block title %}Allocation Complete{% endblock title %}
+
+{% block main-content %}
+<h3>Room Allocation Complete</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Room</th>
+            <th>Priority</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for request in requests %}
+        <tr>
+            <td>{{ request.user.username }}</td>
+            <td>{{ request.room.name }}</td>
+            <td>{{ request.priority }}</td>
+            <td>{{ request.status }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock main-content %}

@@ -1,0 +1,188 @@
+{% extends "hostel/index.html" %}
+{% load static %}
+
+{% block title %}Student Profile | Babcock University{% endblock title %}
+
+{% block main-content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-primary text-white py-4">
+                    <h2 class="h4 mb-0 text-center">
+                        <i class="bi bi-person-badge me-2"></i>Student Profile
+                    </h2>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!-- Form Errors -->
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger mb-4">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <div class="row g-4">
+                            <!-- Profile Picture -->
+                            <div class="col-12 text-center">
+                                <label class="form-label">Profile Picture</label>
+                                <div class="mb-3">
+                                    {% if form.instance.image %}
+                                    <img src="{{ form.instance.image.url }}" alt="Profile Picture" class="img-thumbnail rounded-circle" width="150">
+                                    {% endif %}
+                                </div>
+                                {{ form.image }}
+                                {% if form.image.errors %}
+                                <div class="text-danger small">{{ form.image.errors|striptags }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Personal Information -->
+                            <div class="col-12">
+                                <h5 class="text-primary mb-4 border-bottom pb-2">
+                                    <i class="bi bi-info-circle me-2"></i>Personal Information
+                                </h5>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label class="form-label">Full Name</label>
+                                    {{ form.fullname }}
+                                </div>
+                            </div>
+                            <div class="card-body p-4 p-md-5">
+                                <form method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+            
+                                    <div class="row g-4">
+                                        <div class="col-md-6">  <div class="form-group mb-4">
+                                                <label class="form-label">Gender</label>
+                                                {{ form.gender }}  </div>
+                                        </div>
+            
+                                        <div class="col-md-6">  <div class="form-group mb-4">
+                                                <label class="form-label">Level</label>
+                                                {{ form.level }}  </div>
+                                        </div>
+            
+                                        </div>
+                                </form>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label class="form-label">Matric Number</label>
+                                    {{ form.matric_number }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label class="form-label">Mobile Number</label>
+                                    {{ form.mobile }}
+                                </div>
+                            </div>
+                            
+
+                            <!-- Medical Information -->
+                            <div class="col-12">
+                                <h5 class="text-primary mb-4 border-bottom pb-2">
+                                    <i class="bi bi-heart-pulse me-2"></i>Medical Information
+                                </h5>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-group mb-4">
+                                    <label class="form-label">Conditions</label>
+                                    <div class="form-check-group">
+                                        {% for checkbox in form.conditions %}
+                                        <div class="form-check">
+                                            {{ checkbox.tag }}
+                                            <label class="form-check-label" for="{{ checkbox.id_for_label }}">
+                                                {{ checkbox.choice_label }}
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-group mb-4">
+                                    <label class="form-label">Other Health Challenges</label>
+                                    {{ form.other_health_challenges }}
+                                </div>
+                            </div>
+
+                            <!-- Proof Image -->
+                            <div class="col-12">
+                                <div class="form-group mb-4">
+                                    <label class="form-label">Proof of Medical Condition / Executive Status</label>
+                                    <div class="mb-3">
+                                        {% if form.instance.proof_image %}
+                                        <img src="{{ form.instance.proof_image.url }}" alt="Proof Document" class="img-thumbnail" width="200">
+                                        {% endif %}
+                                    </div>
+                                    {{ form.proof_image }}
+                                </div>
+                            </div>
+
+                            <!-- Emergency Contact -->
+                            <div class="col-12">
+                                <h5 class="text-primary mb-4 border-bottom pb-2">
+                                    <i class="bi bi-telephone me-2"></i>Emergency Contact
+                                </h5>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label class="form-label">Next of Kin</label>
+                                    {{ form.next_of_kin }}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label class="form-label">Next of Kin Mobile</label>
+                                    {{ form.next_of_kin_mobile }}
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="col-12 text-center mt-4">
+                                <button type="submit" class="btn btn-primary px-5 py-2">
+                                    <i class="bi bi-save me-2"></i>Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control, .form-select {
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+    }
+    
+    .form-check-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+    
+    .form-check-label {
+        margin-left: 0.5rem;
+    }
+    
+    textarea {
+        min-height: 120px;
+    }
+</style>
+{% endblock main-content %}

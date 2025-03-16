@@ -1,0 +1,119 @@
+{% extends "hostel/index.html" %}
+{% load static %}
+{% block title %}Welcome to Babcock University{% endblock title %}
+
+{% block main-content %}
+<!-- Hero Section -->
+<div class="container mt-5">
+    <div class="text-center">
+        <i class="bi bi-building fs-1 text-primary mb-3"></i>
+        <h1 class="display-4 fw-bold text-primary">Welcome to Babcock University</h1>
+        <p class="lead fs-4 text-muted">Your journey to excellence starts here. We are excited to have you on board.</p>
+    </div>
+</div>
+
+<!-- Quick Links Section -->
+<div class="container mt-5 py-5 bg-light">
+    <h2 class="text-center mb-5 fw-bold text-uppercase border-bottom border-primary pb-3">Quick Links</h2>
+    <div class="row g-4">
+        <!-- Dashboard Card -->
+        <div class="col-md-4">
+            <div class="card shadow-lg h-100 hover-shadow">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-speedometer2 fs-1 text-primary mb-3"></i>
+                    <h3 class="card-title mb-3">Student Dashboard</h3>
+                    <p class="card-text text-secondary mb-4">Access your dashboard to manage academic records and more.</p>
+                    <a href="{% url 'userauth:student_dashboard' %}" class="btn btn-primary px-4">
+                        Access <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Profile Card -->
+        <div class="col-md-4">
+            <div class="card shadow-lg h-100 hover-shadow">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-person-circle fs-1 text-primary mb-3"></i>
+                    <h3 class="card-title mb-3">Profile</h3>
+                    <p class="card-text text-secondary mb-4">View and update your personal information.</p>
+                    <a href="{% url 'userauth:profile' %}" class="btn btn-primary px-4">
+                        Manage <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Available Rooms Card -->
+        <div class="col-md-4">
+            <div class="card shadow-lg h-100 hover-shadow">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-door-open fs-1 text-primary mb-3"></i>
+                    <h3 class="card-title mb-3">Available Rooms</h3>
+                    <p class="card-text text-secondary mb-4">Check hostel room availability and allocations.</p>
+                    <a href="{% url 'userauth:occupied_rooms' %}" class="btn btn-primary px-4">
+                        View <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- About Us Section -->
+<div class="container mt-5 py-5">
+    <h2 class="text-center mb-5 fw-bold text-uppercase border-bottom border-primary pb-3">About Babcock University</h2>
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 bg-gradient-primary text-white shadow-lg">
+                <div class="card-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center">
+                            <i class="bi bi-info-circle fs-1 mb-4 text-warning"></i>
+                        </div>
+                        <div class="col-md-9">
+                            <h3 class="card-title mb-4 mb-4 text-dark">A Leading Private Christian University</h3>
+                            <p class="card-text lead text-dark">
+                                Babcock University is a leading private Christian university in Nigeria, offering world-class education across various disciplines. Our campus fosters intellectual and personal growth with a commitment to excellence, innovation, and holistic development.
+                            </p>
+                            <a href="{% url 'userauth:about_us' %}" class="btn btn-light text-primary mt-3">
+                                Learn More <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Us Section -->
+<div class="container mt-5 py-5 bg-light">
+    <h2 class="text-center mb-5 fw-bold text-uppercase border-bottom border-primary pb-3">Contact Us</h2>
+    <div class="row justify-content-center g-4">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <i class="bi bi-geo-alt fs-1 text-primary mb-3"></i>
+                    <h4 class="card-title mb-3">Address</h4>
+                    <p class="card-text text-muted">
+                        Babcock University<br>
+                        Ilishan-Remo, Ogun State<br>
+                        Nigeria
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <i class="bi bi-envelope fs-1 text-primary mb-3"></i>
+                    <h4 class="card-title mb-3">Email</h4>
+                    <a href="mailto:info@babcock.edu.ng" class="btn btn-outline-primary w-100">
+                        Contact Us <i class="bi bi-arrow-up-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock main-content %}

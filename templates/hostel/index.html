@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}    
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />  
+    <title>Babcock University | {% block title %}{% endblock title %}</title>
+
+    <style>
+        .navbar-brand-icon {
+            font-size: 2rem;
+            margin-right: 10px;
+        }
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+        .navbar {
+            background-color: #007BFF;
+        }
+        .navbar-brand img {
+            border-radius: 2px;
+        }
+        .navbar-nav .nav-link {
+            color: white;
+            margin: 0 15px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .navbar-nav .nav-link:hover {
+            background-color: #0056b3;
+            color: white;
+            border-radius: 5px;
+        }
+        .footer {
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .landing-hero {
+            background: linear-gradient(rgba(0,123,255,0.1), rgba(0,123,255,0.1)), url('{% static "images/campus-bg.jpg" %}');
+            background-size: cover;
+            padding: 4rem 0;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        .announcement-card {
+            transition: transform 0.2s;
+        }
+        .announcement-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-building navbar-brand-icon text-white"></i>
+                <span class="visually-hidden">Babcock University</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'userauth:home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'userauth:occupied_rooms' %}">Available Rooms</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'userauth:student_dashboard' %}">
+                            Dashboard
+                            {% if unread_count > 0 %}
+                            <span class="badge bg-danger">{{ unread_count }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url "userauth:about_us" %}" class="nav-link active">Learn More</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item mx-2">
+                        <a class="nav-link text-white" href="{% url 'userauth:login' %}">Login</a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link text-white" href="{% url 'userauth:signup' %}">Register</a>
+                    </li>
+                    {% endif %}
+                </ul>
+
+                {% if request.user.is_authenticated %}
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown mx-2">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ request.user }}</a>
+                        <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                            <li><a class="dropdown-item" href="{% url 'userauth:profile' %}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'userauth:changepassword' %}">Change Password</a></li>
+                            <form action="{% url 'userauth:logout' %}" method="POST" style="display: inline;"> 
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item">Logout</button>
+                            </form>
+                        </ul>
+                    </li>
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="messages-container">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    {% block banner-slider %}{% endblock banner-slider %}
+    {% block information %}{% endblock information %}
+
+    {% block main-content %}
+        {% if not user.is_authenticated %}
+        <div class="container mt-4">
+            <div class="landing-hero text-center">
+                <h1 class="display-4 fw-bold mb-4">Welcome to Babcock Hostel Management</h1>
+                <p class="lead mb-4">Experience comfortable and secure student living</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{% url 'userauth:signup' %}" class="btn btn-primary btn-lg">Get Started</a>
+                    <a href="{% url 'userauth:about_us' %}" class="btn btn-outline-primary btn-lg">Learn More</a>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="card h-100 text-center p-4">
+                        <i class="bi bi-shield-check feature-icon text-primary"></i>
+                        <h3>Safe & Secure</h3>
+                        <p>24/7 security surveillance and access control systems</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 text-center p-4">
+                        <i class="bi bi-wifi feature-icon text-primary"></i>
+                        <h3>Modern Amenities</h3>
+                        <p>High-speed WiFi, study lounges, and recreational facilities</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 text-center p-4">
+                        <i class="bi bi-people feature-icon text-primary"></i>
+                        <h3>Community Living</h3>
+                        <p>Vibrant student community with regular social events</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="card announcement-card">
+                        <div class="card-body">
+                            <h4 class="card-title"><i class="bi bi-megaphone me-2"></i>Latest Announcements</h4>
+                            <div class="list-group">
+                                <a href="#" class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Maintenance Notice</h5>
+                                        <small>3 days ago</small>
+                                    </div>
+                                    <p class="mb-1">Scheduled water system maintenance on Saturday 10am-2pm</p>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">New Facilities</h5>
+                                        <small>1 week ago</small>
+                                    </div>
+                                    <p class="mb-1">New fitness center now open in Block C</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h4 class="card-title mb-4"><i class="bi bi-question-circle me-2"></i>Why Choose Us?</h4>
+                            <div class="accordion" id="faqAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                            Hostel Allocation Process
+                                        </button>
+                                    </h2>
+                                    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            Our transparent room allocation system ensures fair distribution based on student preferences and academic requirements.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                            Payment Options
+                                        </button>
+                                    </h2>
+                                    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            We accept various payment methods including online transfers, card payments, and bank deposits.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endblock main-content %}
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Contact Support</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-envelope me-2"></i>hostels@babcock.edu.ng</li>
+                        <li><i class="bi bi-telephone me-2"></i>+234 801 234 5678</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none">Hostel Rules</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Fee Structure</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <p class="mb-0">&copy; 2025 Babcock University. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+</body>
+</html>

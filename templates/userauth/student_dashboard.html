@@ -1,0 +1,305 @@
+{% extends "hostel/index.html" %}
+{% load static %}
+{% block title %}Student Dashboard{% endblock title %}
+
+{% block main-content %}
+<div class="container py-5">
+    <!-- Notification Badge -->
+    <div class="text-end mb-4">
+        {% if unread_count > 0 %}
+        <span class="badge bg-danger fs-6">
+            <i class="bi bi-bell"></i> {{ unread_count }} unread notifications
+        </span>
+        {% endif %}
+    </div>
+
+    <!-- Welcome Header -->
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-primary">
+            <i class="bi bi-person-circle me-2"></i>Welcome, {{ request.user.username }}!
+        </h1>
+        <p class="lead text-muted">Your Student Accommodation Portal</p>
+    </div>
+
+    <!-- Rejection Notifications -->
+    {% for req in requests %}
+        {% if req.status == 'Rejected' %}
+        <div class="card mb-4 border-{% if not req.read %}danger border-2{% else %}secondary{% endif %}">
+            <div class="card-header bg-{% if not req.read %}danger{% else %}light{% endif %} text-dark">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-x-circle me-2"></i>Request Rejected
+                    </h5>
+                    <small>{{ req.rejected_at|date:"M d, Y H:i" }}</small>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <p class="mb-1"><strong>Hostel:</strong> {{ req.hostel.name }}</p>
+                        <p class="mb-1"><strong>Room:</strong> {{ req.room.name }}</p>
+                        <p class="mb-0"><strong>Reason:</strong> {{ req.rejection_reason }}</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        {% if not req.read %}
+                        <a href="{% url 'userauth:clear_rejection' req.id %}" 
+                           class="btn btn-sm btn-outline-danger">
+                            Mark as read
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+
+    <!-- Dashboard Content -->
+    <div class="row g-4">
+        <!-- Room Request Section -->
+        <div class="col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-house-door me-2"></i>Room Request Status
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if requests %}
+                        {% for req in requests %}
+                            {% if req.status != 'Rejected' %}
+                            <div class="d-grid gap-3 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-door-open fs-4 text-primary me-3"></i>
+                                    <div>
+                                        <h5 class="mb-0">{{ req.room.name }}</h5>
+                                        <small class="text-muted">{{ req.hostel.name }} - {{ req.block.name }}</small>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-{% if req.status == 'Allocated' %}success{% else %}warning{% endif %} fs-6">
+                                        {{ req.status }}
+                                    </span>
+                                    <small class="text-muted">Submitted on {{ req.created_at|date:"M d, Y" }}</small>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                    <div class="alert alert-warning d-flex align-items-center mb-0">
+                        <i class="bi bi-exclamation-triangle me-3 fs-4"></i>
+                        <div>
+                            <h5 class="alert-heading mb-1">No Active Requests</h5>
+                            <p class="mb-0">You haven't submitted any room requests yet</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Room Allocation Section -->
+        <div class="col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-check2-circle me-2"></i>Room Allocation
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if allocation_data %}
+                    <div class="d-grid gap-3">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-house-check fs-4 text-success me-3"></i>
+                            <div>
+                                <h5 class="mb-0">{{ allocation_data.room.name }}</h5>
+                                <small class="text-muted">{{ allocation_data.room.block.hostel.name }} - {{ allocation_data.room.block.name }}</small>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-success fs-6">
+                                <i class="bi bi-key me-2"></i>Allocated
+                            </span>
+                            <small class="text-muted">Since {{ allocation_data.created_at|date:"M d, Y" }}</small>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info d-flex align-items-center mb-0">
+                        <i class="bi bi-info-circle me-3 fs-4"></i>
+                        <div>
+                            <h5 class="alert-heading mb-1">No Current Allocation</h5>
+                            <p class="mb-0">Your room allocation will appear here once assigned</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="col-12 mt-4">
+            <div class="d-grid gap-3 d-md-flex justify-content-md-center">
+                <a href="{% url 'userauth:profile' %}" class="btn btn-primary btn-lg px-4">
+                    <i class="bi bi-person-gear me-2"></i>Manage Profile
+                </a>
+                <a href="{% url 'userauth:changepassword' %}" class="btn btn-outline-primary btn-lg px-4">
+                    <i class="bi bi-shield-lock me-2"></i>Change Password
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border-radius: 1rem;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .alert {
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+    }
+    
+    .badge {
+        padding: 0.5em 1em;
+        border-radius: 0.75rem;
+        font-weight: 500;
+    }
+</style>
+{% endblock main-content %}
+
+{% comment %} {% extends "hostel/index.html" %}
+{% load static %}
+{% block title %}Student Dashboard{% endblock title %}
+
+{% block main-content %}
+<div class="container py-5">
+    <!-- Welcome Header -->
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-primary">
+            <i class="bi bi-person-circle me-2"></i>Welcome, {{ request.user.username }}!
+        </h1>
+        <p class="lead text-muted">Your Student Accommodation Portal</p>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="row g-4">
+        <!-- Room Request Section -->
+        <div class="col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-house-door me-2"></i>Room Request Status
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if request_data %}
+                    <div class="d-grid gap-3">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-door-open fs-4 text-primary me-3"></i>
+                            <div>
+                                <h5 class="mb-0">{{ request_data.room.name }}</h5>
+                                <small class="text-muted">{{ request_data.hostel.name }} - {{ request_data.block.name }}</small>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-{% if request_data.status == 'Approved' %}success{% else %}warning{% endif %} fs-6">
+                                {{ request_data.status }}
+                            </span>
+                            <small class="text-muted">Submitted on {{ request_data.created_at|date:"M d, Y" }}</small>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning d-flex align-items-center mb-0">
+                        <i class="bi bi-exclamation-triangle me-3 fs-4"></i>
+                        <div>
+                            <h5 class="alert-heading mb-1">No Active Requests</h5>
+                            <p class="mb-0">You haven't submitted any room requests yet</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Room Allocation Section -->
+        <div class="col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-check2-circle me-2"></i>Room Allocation
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if allocation_data %}
+                    <div class="d-grid gap-3">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-house-check fs-4 text-success me-3"></i>
+                            <div>
+                                <h5 class="mb-0">{{ allocation_data.room.name }}</h5>
+                                <small class="text-muted">{{ allocation_data.room.block.hostel.name }} - {{ allocation_data.room.block.name }}</small>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-success fs-6">
+                                <i class="bi bi-key me-2"></i>Allocated
+                            </span>
+                            <small class="text-muted">Since {{ allocation_data.created_at|date:"M d, Y" }}</small>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info d-flex align-items-center mb-0">
+                        <i class="bi bi-info-circle me-3 fs-4"></i>
+                        <div>
+                            <h5 class="alert-heading mb-1">No Current Allocation</h5>
+                            <p class="mb-0">Your room allocation will appear here once assigned</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="col-12 mt-4">
+            <div class="d-grid gap-3 d-md-flex justify-content-md-center">
+                <a href="{% url 'userauth:profile' %}" class="btn btn-primary btn-lg px-4">
+                    <i class="bi bi-person-gear me-2"></i>Manage Profile
+                </a>
+                <a href="{% url 'userauth:changepassword' %}" class="btn btn-outline-primary btn-lg px-4">
+                    <i class="bi bi-shield-lock me-2"></i>Change Password
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border-radius: 1rem;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .alert {
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+    }
+    
+    .badge {
+        padding: 0.5em 1em;
+        border-radius: 0.75rem;
+        font-weight: 500;
+    }
+</style>
+{% endblock main-content %} {% endcomment %}
